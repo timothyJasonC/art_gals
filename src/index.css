@@ -169,15 +169,3 @@ header h1 {
     filter: grayscale(1);
     -webkit-filter: grayscale(1);
 }
-
-@keyframes scrollGallery {
-    0% {
-        transform: translateX(100%);
-        /* Mulai dari posisi kanan penuh */
-    }
-
-    100% {
-        transform: translateX(-100%);
-        /* Berakhir di posisi kiri penuh */
-    }
-}

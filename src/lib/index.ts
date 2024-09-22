@@ -39,7 +39,7 @@ export const getGridStyle = (index: number) => {
 export const calculateMinWidth = (imageUrls: string[]) => {
     const batchSize = 28;
     const initialWidth = 600;
-    const extraWidth = 1500;
+    const extraWidth = 600;
 
     const batchCount = Math.ceil(imageUrls.length / batchSize);
     return `${initialWidth + (batchCount - 1) * extraWidth}px`;

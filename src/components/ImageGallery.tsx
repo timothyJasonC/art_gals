@@ -25,6 +25,27 @@ export default function ImageGallery() {
 
     // console.log(imageList);    
 
+    useEffect(() => {
+        const gallery = galleryRef.current;
+
+        const handleWheel = (event: WheelEvent) => {
+            event.preventDefault(); // Mencegah scroll default
+            if (gallery) {
+                gallery.scrollBy({ left: event.deltaY, behavior: 'instant' }); // Scroll horizontal
+            }
+        };
+
+        if (gallery) {
+            gallery.addEventListener('wheel', handleWheel);
+        }
+
+        return () => {
+            if (gallery) {
+                gallery.removeEventListener('wheel', handleWheel);
+            }
+        };
+    }, [imageUrls]);
+
     const { totalColumns } = calculateGridDimensions(imageUrls);
 
     useEffect(() => {

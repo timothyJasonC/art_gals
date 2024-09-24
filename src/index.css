@@ -2,9 +2,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Josefin+Sans:ital,wght@0,100..700;1,100..700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Josefin+Sans:ital,wght@0,100..700;1,100..700&family=Josefin+Slab:ital,wght@0,100..700;1,100..700&display=swap');
 
-/* font-family: "Dela Gothic One", sans-serif; */
-/* font-family: "Josefin Sans", sans-serif; */
-/* font-family: "Josefin Slab", serif; */
 * {
     box-sizing: border-box;
     margin: 0;
@@ -113,21 +110,41 @@ header h1 {
 .home {
     display: flex;
     flex-direction: column;
-    margin-top: 40PX;
+    margin-top: 0.2rem;
     align-items: end;
+}
+
+.about, .contact {
+    display: flex;
+    gap: 12px;
+    flex-direction: column;
+    margin-top: 0.2rem;
+    align-items: center;
 }
 
 .title {
     font-family: "Dela Gothic One", sans-serif;
     color: white;
-    text-align: center;
     font-size: 6rem;
     letter-spacing: 2px;
     line-height: 7rem;
+    text-align: center;
 }
 
 .sub-title {
     align-items: end;
+    width: 400px;
+    margin-top: 6px;
+    font-weight: 400;
+    font-family: "Josefin Slab", sans-serif;
+    color: white;
+    font-size: 1rem;
+    opacity: 80%;
+    letter-spacing: 2px;
+}
+
+.sub-title-2 {
+    align-items: center;
     width: 400px;
     margin-top: 6px;
     font-weight: 400;
@@ -147,6 +164,14 @@ header h1 {
     scrollbar-width: none;
 }
 
+.about a{
+    padding: 10px 20px;
+    border: 1px solid #ffffff;
+    border-radius: 20px;
+    text-decoration: none;
+    color: #ffffff;
+}
+
 .gallery-container {
     margin-top: 1rem;
     width: 100%;
@@ -154,7 +179,7 @@ header h1 {
     overflow-x: auto;
     scroll-behavior: smooth;
     white-space: nowrap;
-    height: 40vh;
+    height: 450px;
 }
 
 .gallery {
@@ -168,4 +193,95 @@ header h1 {
     object-fit: cover;
     filter: grayscale(1);
     -webkit-filter: grayscale(1);
+}
+
+@media only screen and (max-width: 920px) {
+    .title {
+        font-size: 3.2em;
+        line-height: 4rem;
+        margin-top: 30px;
+
+    }
+
+    .sub-title, .sub-title-2 {
+        width: 220px;
+        font-size: .8em;
+    }
+}
+@media only screen and (max-width: 700px) {
+    header div {
+        font-size: 12px;
+        color: black;
+        text-decoration: none;
+    }
+    
+    header h1 {
+        font-size: 24px;
+    }
+
+    .title {
+        font-size: 3.2em;
+        line-height: 4.5rem;
+    }
+
+    .sub-title,.sub-title-2 {
+        width: 275px;
+    }
+}
+
+@media only screen and (max-width: 550px) {
+    .title {
+        font-size: 3.6em;
+        line-height: 5rem;
+    }
+
+    .sub-title, .sub-title-2 {
+        width: 245px;
+    }
+
+    .background-color {
+        border: .4rem solid rgba(0, 0, 0);
+        padding: .4rem .4rem 0;
+
+    }
+}
+
+@media only screen and (max-width: 431px) {
+    header div {
+        font-size: 8px;
+        color: black;
+        text-decoration: none;
+    }
+    
+    header h1 {
+        font-size: 18px;
+    }
+
+    .title {
+        font-size: 2.6em;
+        line-height: 3rem;
+        margin-top: 40px;
+    }
+
+    .sub-title, .sub-title-2 {
+        width: 245px;
+    }
+
+    .background-color {
+        border: .4rem solid rgba(0, 0, 0);
+        padding: .4rem .4rem 0;
+
+    }
+}
+
+@media only screen and (min-height: 800px) {
+    .gallery-container {
+        height: 600px;
+    }
+}
+
+@media only screen and (min-height: 1000px) {
+    .gallery-container {
+        height: 1000px;
+    }
 }

@@ -1,37 +1,67 @@
 import { useEffect, useRef, useState } from "react";
-import { imageList } from '../dummy'
-import { calculateGridDimensions, calculateMinWidth, getGridStyle } from "../lib";
+import { calculateGridDimensions, calculateMinWidth, getGridStyle, getGridStyleVer2, getRandomImages } from "../lib";
+import { imageList } from "../dummy";
 
-export default function ImageGallery() {
+type GalleryProps = {
+    type: string
+}
+
+export default function ImageGallery({ type }: GalleryProps) {
     const galleryRef = useRef<HTMLDivElement>(null);
     const [isHovered, setIsHovered] = useState(false);
-    const [imageUrls, setImageUrls] = useState<string[]>(imageList.slice(0, 30));
+    const [imageUrls, setImageUrls] = useState<string[]>([]);
+    const [imageUrls2, setImageUrls2] = useState<string[]>([]);
 
-    // useEffect(() => {
-    //   const accessKey = import.meta.env.VITE_APP_UNSPLASH_ACCESS_KEY;
-
-    //   fetch('https://api.unsplash.com/photos/random?count=100', {
-    //     headers: {
-    //       Authorization: `Client-ID ${accessKey}`,
-    //     },
-    //   })
-    //     .then((response) => response.json())
-    //     .then((data) => {
-    //       const urls = data.map((img: any) => img.urls.regular);
-    //       setImageUrls(urls);
-    //     })
-    //     .catch((error) => console.error('Error fetching image:', error));
-    // }, []);
-
-    // console.log(imageList);    
+    const randomImg = async () => {
+        const images = getRandomImages()
+        setImageUrls(images)
+    }
 
     useEffect(() => {
+        randomImg()
+        const accessKey = import.meta.env.VITE_APP_UNSPLASH_ACCESS_KEY;
+
+        fetch('https://api.unsplash.com/photos/random?count=30', {
+            headers: {
+                Authorization: `Client-ID ${accessKey}`,
+            },
+        })
+            .then((response) => response.json())
+            .then((data) => {
+                const urls = data.map((img: any) => img.urls.regular);
+                setImageUrls(urls);
+            })
+            .catch(() => {
+                const images = getRandomImages()
+                setImageUrls(images)
+            });
+
+        if (type === '2') {
+            fetch('https://api.unsplash.com/photos/random?count=30', {
+                headers: {
+                    Authorization: `Client-ID ${accessKey}`,
+                },
+            })
+                .then((response) => response.json())
+                .then((data) => {
+                    const urls = data.map((img: any) => img.urls.regular);
+                    setImageUrls2(urls);
+                })
+                .catch(() => {
+                    const images = getRandomImages()
+                    setImageUrls2(images)
+                });
+        }
+    }, []);
+
+    useEffect(() => {
+
         const gallery = galleryRef.current;
 
         const handleWheel = (event: WheelEvent) => {
-            event.preventDefault(); // Mencegah scroll default
+            event.preventDefault()
             if (gallery) {
-                gallery.scrollBy({ left: event.deltaY, behavior: 'instant' }); // Scroll horizontal
+                gallery.scrollBy({ left: event.deltaY, behavior: 'instant' })
             }
         };
 
@@ -74,22 +104,46 @@ export default function ImageGallery() {
         const gallery = galleryRef.current;
 
         const handleScroll = () => {
-            if (gallery) {
-                const scrollPercentage = (gallery.scrollLeft / (gallery.scrollWidth - gallery.clientWidth));
 
-                if (scrollPercentage > 0.8) {
-                    setImageUrls(prev => [...prev, ...imageList])
-                    //     const accessKey = import.meta.env.VITE_APP_UNSPLASH_ACCESS_KEY;
-                    //     fetch('https://api.unsplash.com/photos/random?count=100', {
-                    //         headers: {
-                    //             Authorization: `Client-ID ${accessKey}`,
-                    //         },
-                    //     })
-                    //         .then((response) => response.json())
-                    //         .then((data) => {
-                    //             const urls = data.map((img: any) => img.urls.regular);
-                    //             setImageUrls(prev => [...prev, ...urls])
-                    //         })
+            if (gallery) {
+
+                const isAtEnd = gallery.scrollLeft + gallery.clientWidth >= gallery.scrollWidth - 1;
+                const accessKey = import.meta.env.VITE_APP_UNSPLASH_ACCESS_KEY;
+
+                if (isAtEnd) {
+                    fetch('https://api.unsplash.com/photos/random?count=30', {
+                        headers: {
+                            Authorization: `Client-ID ${accessKey}`,
+                        },
+                    })
+                        .then((response) => response.json())
+                        .then((data) => {
+                            const urls = data.map((img: any) => img.urls.regular);
+                            setImageUrls(prev => [...prev, ...urls])
+                        })
+                        .catch(() => {
+                            const images = getRandomImages()
+                            setImageUrls(prev => [...prev, ...images])
+                        });
+
+                    if (type === '2') {
+                        setImageUrls2(prev => [...prev, ...imageList])
+
+                        fetch('https://api.unsplash.com/photos/random?count=30', {
+                            headers: {
+                                Authorization: `Client-ID ${accessKey}`,
+                            },
+                        })
+                            .then((response) => response.json())
+                            .then((data) => {
+                                const urls = data.map((img: any) => img.urls.regular);
+                                setImageUrls2(prev => [...prev, ...urls])
+                            })
+                            .catch(() => {
+                                const images = getRandomImages()
+                                setImageUrls(prev => [...prev, ...images])
+                            });
+                    }
                 }
             }
         };
@@ -111,12 +165,29 @@ export default function ImageGallery() {
                 style={{
                     minWidth: calculateMinWidth(imageUrls),
                     gridTemplateColumns: `repeat(${totalColumns}, max(3rem))`,
-                    gridTemplateRows: `repeat(5, 6.8vh)`,
+                    gridTemplateRows: `repeat(5, 6vh)`,
+                    position: `${type === '2' ? 'relative' : 'static'}`,
                 }}>
                 {imageUrls.map((imgLink: string, index: number) => (
                     <img key={index} src={imgLink} alt={`img-${index + 1}`} style={getGridStyle(index)} />
                 ))}
             </section>
+            {type === '2' && (
+                <section className='gallery'
+                    style={{
+                        marginTop: '12px',
+                        minWidth: calculateMinWidth(imageUrls),
+                        gridTemplateColumns: `repeat(${totalColumns}, max(3rem))`,
+                        gridTemplateRows: `repeat(5, 6vh)`,
+                        position: `${type === '2' ? 'relative' : 'static'}`,
+                    }}>
+                    {imageUrls2.map((imgLink: string, index: number) => (
+                        <img key={index} src={imgLink} alt={`img-${index + 1}`} style={getGridStyleVer2(index)} />
+                    ))}
+                </section>
+            )
+
+            }
         </div>
     )
 }

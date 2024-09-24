@@ -6,14 +6,14 @@ export default function Header() {
             <div>
                 <Link to={'/'} className="link"
                     style={{ textDecoration: 'none', color: '#cccccccc' }}>NAVIGATOR</Link>
-                <Link to={'/'} className="link"
+                <Link to={'/explore'} className="link"
                     style={{ textDecoration: 'none', color: '#cccccccc' }}>EXSPLORE</Link>
             </div>
             <h1>artgals</h1>
             <div>
-                <Link to={'/'} className="link"
+                <Link to={'/about'} className="link"
                     style={{ textDecoration: 'none', color: '#cccccccc' }}>ABOUT</Link>
-                <Link to={'/'} className="link"
+                <Link to={'/contact'} className="link"
                     style={{ textDecoration: 'none', color: '#cccccccc' }}>CONTACTS</Link>
             </div>
         </header>

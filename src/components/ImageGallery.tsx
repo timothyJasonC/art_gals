@@ -62,12 +62,12 @@ export default function ImageGallery({ type }: GalleryProps) {
         const sensitivity = 30;
     
         const handleWheel = (event: WheelEvent) => {
-            if (window.innerWidth >= 768) {
+            // if (window.innerWidth >= 768) {
                 event.preventDefault();
                 if (gallery) {
                     gallery.scrollBy({ left: event.deltaY, behavior: 'instant' });
                 }
-            }
+            // }
         };
     
         const handleTouchStart = (event: TouchEvent) => {
@@ -86,12 +86,12 @@ export default function ImageGallery({ type }: GalleryProps) {
         };
     
         if (gallery) {
-            if (window.innerWidth >= 768) {
+            // if (window.innerWidth >= 768) {
+            // } else {
                 gallery.addEventListener('wheel', handleWheel);
-            } else {
                 gallery.addEventListener('touchstart', handleTouchStart);
                 gallery.addEventListener('touchmove', handleTouchMove);
-            }
+            // }
         }
     
         return () => {

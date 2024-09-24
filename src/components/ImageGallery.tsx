@@ -55,26 +55,59 @@ export default function ImageGallery({ type }: GalleryProps) {
     }, []);
 
     useEffect(() => {
-
         const gallery = galleryRef.current;
-
+    
+        let touchStartX = 0; 
+        let scrollStartX = 0; 
+        const sensitivity = 30;
+    
         const handleWheel = (event: WheelEvent) => {
-            event.preventDefault()
-            if (gallery) {
-                gallery.scrollBy({ left: event.deltaY, behavior: 'instant' })
+            if (window.innerWidth >= 768) {
+                event.preventDefault();
+                if (gallery) {
+                    gallery.scrollBy({ left: event.deltaY, behavior: 'instant' });
+                }
             }
         };
-
+    
+        const handleTouchStart = (event: TouchEvent) => {
+            if (window.innerWidth < 768 && gallery) {
+                touchStartX = event.touches[0].clientX;
+                scrollStartX = gallery.scrollLeft;
+            }
+        };
+    
+        const handleTouchMove = (event: TouchEvent) => {
+            if (window.innerWidth < 768 && gallery) {
+                const touchMoveX = event.touches[0].clientX;
+                const deltaX = (touchStartX - touchMoveX) * sensitivity;
+                gallery.scrollLeft = scrollStartX + deltaX; 
+            }
+        };
+    
         if (gallery) {
-            gallery.addEventListener('wheel', handleWheel);
+            if (window.innerWidth >= 768) {
+                gallery.addEventListener('wheel', handleWheel);
+            } else {
+                gallery.addEventListener('touchstart', handleTouchStart);
+                gallery.addEventListener('touchmove', handleTouchMove);
+            }
         }
-
+    
         return () => {
             if (gallery) {
-                gallery.removeEventListener('wheel', handleWheel);
+                if (window.innerWidth >= 768) {
+                    gallery.removeEventListener('wheel', handleWheel);
+                } else {
+                    gallery.removeEventListener('touchstart', handleTouchStart);
+                    gallery.removeEventListener('touchmove', handleTouchMove);
+                }
             }
         };
     }, [imageUrls]);
+    
+    
+    
 
     const { totalColumns } = calculateGridDimensions(imageUrls);
 
@@ -88,7 +121,7 @@ export default function ImageGallery({ type }: GalleryProps) {
                     if (gallery.scrollLeft + gallery.clientWidth >= gallery.scrollWidth) {
                         gallery.scrollTo({ left: 0, behavior: 'smooth' });
                     } else {
-                        gallery.scrollBy({ left: 1, behavior: 'smooth' });
+                        gallery.scrollBy({ left: 2, behavior: 'smooth' });
                     }
                 }
             }, 20)
@@ -104,9 +137,7 @@ export default function ImageGallery({ type }: GalleryProps) {
         const gallery = galleryRef.current;
 
         const handleScroll = () => {
-
             if (gallery) {
-
                 const isAtEnd = gallery.scrollLeft + gallery.clientWidth >= gallery.scrollWidth - 1;
                 const accessKey = import.meta.env.VITE_APP_UNSPLASH_ACCESS_KEY;
 
